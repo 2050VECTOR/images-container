@@ -1,0 +1,552 @@
+<script>
+    /*
+     *函数功能：将递归数组内容深拷贝到obj对象中
+     *参数：
+     *   @data：递归数组
+     *   @dst：存储对象
+     */
+
+    const userlist = [
+        {
+            userid: "52033",
+            username: "李四",
+            wtcode: "G02",
+            wtname: "发型师",
+            cmtype: "M",
+        },
+        {
+            userid: "012",
+            username: "ss1",
+            wtcode: "G02",
+            wtname: "发型师",
+            cmtype: "C",
+        },
+        {
+            userid: "01",
+            username: "张三",
+            wtcode: "G03",
+            wtname: "技师",
+            cmtype: "C",
+        },
+        {
+            userid: "23",
+            username: "3444",
+            wtcode: "G03",
+            wtname: "技师",
+            cmtype: "C",
+        },
+        {
+            userid: "45454",
+            username: "455454",
+            wtcode: "G04",
+            wtname: "美容师",
+            cmtype: "C",
+        },
+        {
+            userid: "03",
+            username: "赵武",
+            wtcode: "G05",
+            wtname: "助理",
+            cmtype: "C",
+        },
+    ];
+    const worklist = [
+        {
+            code: "G01",
+            name: "管理员",
+        },
+        {
+            code: "G02",
+            name: "发型师",
+        },
+        {
+            code: "G03",
+            name: "技师",
+        },
+        {
+            code: "G04",
+            name: "美容师",
+        },
+        {
+            code: "G05",
+            name: "助理",
+        },
+        {
+            code: "G06",
+            name: "前台",
+        },
+    ];
+    const WorkUser = [
+        {
+            label: "管理员",
+            value: "G01",
+            children: [],
+        },
+        {
+            label: "发型师",
+            value: "G02",
+            children: [
+                {
+                    label: "李四(52033)",
+                    value: "52033",
+                    userid: "52033",
+                    username: "李四",
+                    wtcode: "G02",
+                    wtname: "发型师",
+                    cmtype: "M",
+                },
+                {
+                    label: "ss1(012)",
+                    value: "012",
+                    userid: "012",
+                    username: "ss1",
+                    wtcode: "G02",
+                    wtname: "发型师",
+                    cmtype: "C",
+                },
+            ],
+        },
+        {
+            label: "技师",
+            value: "G03",
+            children: [
+                {
+                    label: "张三(01)",
+                    value: "01",
+                    userid: "01",
+                    username: "张三",
+                    wtcode: "G03",
+                    wtname: "技师",
+                    cmtype: "C",
+                },
+                {
+                    label: "3444(23)",
+                    value: "23",
+                    userid: "23",
+                    username: "3444",
+                    wtcode: "G03",
+                    wtname: "技师",
+                    cmtype: "C",
+                },
+            ],
+        },
+        {
+            label: "美容师",
+            value: "G04",
+            children: [
+                {
+                    label: "455454(45454)",
+                    value: "45454",
+                    userid: "45454",
+                    username: "455454",
+                    wtcode: "G04",
+                    wtname: "美容师",
+                    cmtype: "C",
+                },
+            ],
+        },
+        {
+            label: "助理",
+            value: "G05",
+            children: [
+                {
+                    label: "赵武(03)",
+                    value: "03",
+                    userid: "03",
+                    username: "赵武",
+                    wtcode: "G05",
+                    wtname: "助理",
+                    cmtype: "C",
+                },
+            ],
+        },
+        {
+            label: "前台",
+            value: "G06",
+            children: [],
+        },
+    ];
+    const UserObj = {
+        23: {
+            userid: "23",
+            username: "3444",
+            wtcode: "G03",
+            wtname: "技师",
+            cmtype: "C",
+        },
+        45454: {
+            userid: "45454",
+            username: "455454",
+            wtcode: "G04",
+            wtname: "美容师",
+            cmtype: "C",
+        },
+        52033: {
+            userid: "52033",
+            username: "李四",
+            wtcode: "G02",
+            wtname: "发型师",
+            cmtype: "M",
+        },
+        "012": {
+            userid: "012",
+            username: "ss1",
+            wtcode: "G02",
+            wtname: "发型师",
+            cmtype: "C",
+        },
+        "01": {
+            userid: "01",
+            username: "张三",
+            wtcode: "G03",
+            wtname: "技师",
+            cmtype: "C",
+        },
+        "03": {
+            userid: "03",
+            username: "赵武",
+            wtcode: "G05",
+            wtname: "助理",
+            cmtype: "C",
+        },
+    };
+    const Work = {
+        G01: 0,
+        G02: 1,
+        G03: 2,
+        G04: 3,
+        G05: 4,
+        G06: 5,
+    };
+
+    const menu = [
+        {
+            type: "A",
+            type_code: ["SA028", "SA0022"],
+            mst_code: "S001",
+            costprice: 15.9,
+            buy_price: 15.9,
+            qty: 1,
+            amount: 15.9,
+            opt_perf: 15.9,
+            users: [
+                {
+                    userid: "52033",
+                    service_type: "M",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "012",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "23",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+        },
+        {
+            type: "A",
+            type_code: ["SA005", "SA0003"],
+            mst_code: "S003",
+            costprice: 56,
+            buy_price: 56,
+            qty: 1,
+            amount: 56,
+            opt_perf: 56,
+            users: [
+                {
+                    userid: "45454",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "01",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+        },
+        {
+            type: "A",
+            users: [
+                {
+                    userid: "45454",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "01",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+            type_code: ["SA027", "SA0080"],
+            mst_code: "S001",
+            costprice: 20,
+            buy_price: 20,
+            qty: 1,
+            amount: 20,
+            opt_perf: 20,
+        },
+        {
+            type: "A",
+            users: [
+                {
+                    userid: "23",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "03",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+            type_code: ["SA027", "SA0113"],
+            mst_code: "S001",
+            costprice: 99,
+            buy_price: 99,
+            qty: 1,
+            amount: 99,
+            opt_perf: 99,
+        },
+        {
+            type: "A",
+            users: [
+                {
+                    userid: "23",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "01",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+            type_code: ["", "SA0008"],
+            mst_code: "",
+            costprice: 231,
+            buy_price: 231,
+            qty: 1,
+            amount: 231,
+            opt_perf: 231,
+        },
+        {
+            type: "A",
+            users: [
+                {
+                    userid: "45454",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "45454",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "01",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+            type_code: ["SA032", "SA0177"],
+            mst_code: "S002",
+            costprice: 107.8,
+            buy_price: 107.8,
+            qty: 1,
+            amount: 107.8,
+            opt_perf: 107.8,
+        },
+        {
+            type: "A",
+            users: [
+                {
+                    userid: "23",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "03",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+                {
+                    userid: "01",
+                    service_type: "C",
+                    tc: 0,
+                    yj: 0,
+                },
+            ],
+            type_code: ["SA031", "SA0059"],
+            mst_code: "S001",
+            costprice: 880,
+            buy_price: 880,
+            qty: 1,
+            amount: 880,
+            opt_perf: 880,
+        },
+    ];
+
+    const SC = {
+        S001: [
+            {
+                label: "发型师",
+                value: "G02",
+                children: [
+                    {
+                        label: "李四(52033)",
+                        value: "52033",
+                        userid: "52033",
+                        username: "李四",
+                        wtcode: "G02",
+                        wtname: "发型师",
+                        cmtype: "M",
+                    },
+                    {
+                        label: "ss1(012)",
+                        value: "012",
+                        userid: "012",
+                        username: "ss1",
+                        wtcode: "G02",
+                        wtname: "发型师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+            {
+                label: "技师",
+                value: "G03",
+                children: [
+                    {
+                        userid: "23",
+                        username: "3444",
+                        wtcode: "G03",
+                        wtname: "技师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+            {
+                label: "美容师",
+                value: "G04",
+                children: [
+                    {
+                        userid: "03",
+                        username: "赵武",
+                        wtcode: "G05",
+                        wtname: "助理",
+                        cmtype: "C",
+                    },
+                ],
+            },
+            {
+                label: "助理",
+                value: "G05",
+                children: [
+                    {
+                        userid: "03",
+                        username: "赵武",
+                        wtcode: "G05",
+                        wtname: "助理",
+                        cmtype: "C",
+                    },
+                ],
+            },
+        ],
+        S003: [
+            {
+                label: "技师",
+                value: "G03",
+                children: [
+                    {
+                        userid: "01",
+                        username: "张三",
+                        wtcode: "G03",
+                        wtname: "技师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+            {
+                label: "美容师",
+                value: "G04",
+                children: [
+                    {
+                        userid: "45454",
+                        username: "455454",
+                        wtcode: "G04",
+                        wtname: "美容师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+        ],
+        S002: [
+            {
+                label: "技师",
+                value: "G03",
+                children: [
+                    {
+                        userid: "01",
+                        username: "张三",
+                        wtcode: "G03",
+                        wtname: "技师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+            {
+                label: "美容师",
+                value: "G04",
+                children: [
+                    {
+                        userid: "45454",
+                        username: "455454",
+                        wtcode: "G04",
+                        wtname: "美容师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+        ],
+        "": [
+            {
+                label: "技师",
+                value: "G03",
+                children: [
+                    {
+                        userid: "23",
+                        username: "3444",
+                        wtcode: "G03",
+                        wtname: "技师",
+                        cmtype: "C",
+                    },
+                ],
+            },
+        ],
+    };
+</script>
+
+
+我需要你利用这里面的集合或对象(除了SC)生成SC对象，采用Javascript语言实现
